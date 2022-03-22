@@ -125,6 +125,7 @@ def SearchKeyword(keyword, LinkText):
             naseong.click()
         except selenium.common.exceptions.NoSuchElementException as ex:
             if cnt == 9:
+                print(f"제목이 없음 : {LinkText}")
                 break
             
             # next page
@@ -135,7 +136,11 @@ def SearchKeyword(keyword, LinkText):
 
         keyDownPageDown()
 
-        time.sleep(60)
+        time.sleep(30)
+
+        pyautogui.press('home')
+
+        time.sleep(3)
 
         # Close chrome.
         driver.quit()
@@ -151,7 +156,7 @@ def getJsonInfo(filePath):
 if __name__ == "__main__":
 
     cnt = 0
-    for val in range(0, 70):
+    for val in range(0, 10):
         cnt += 1
         filePath = './searchInfo.json'  # json 파일.
         Array = getJsonInfo(filePath)
@@ -161,4 +166,4 @@ if __name__ == "__main__":
         for keywordInfo in Array:
             #print(f"{keywordInfo['키워드']}, {keywordInfo['제목']}")
             SearchKeyword(keywordInfo['키워드'], keywordInfo['제목'])
-        time.sleep(random.randrange(60, 80))
+        time.sleep(random.randrange(50, 70))

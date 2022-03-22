@@ -124,6 +124,9 @@ def SearchKeyword(keyword, LinkText):
             naseong = driver.find_element(By.LINK_TEXT, LinkText)
             naseong.click()
         except selenium.common.exceptions.NoSuchElementException as ex:
+            if cnt == 9:
+                break
+            
             # next page
             naseong = driver.find_element(By.XPATH, f'//*[@id="__next"]/div/div[2]/div[2]/div[3]/div[1]/div[3]/div/a[{cnt}]')
             naseong.click()

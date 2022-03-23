@@ -86,18 +86,23 @@ def keyDownPageUp():
 
 def SearchKeyword(keyword, LinkText):
 
-    options = webdriver.ChromeOptions()
-    options.add_experimental_option('excludeSwitches', ['enable-logging'])
-    
-    software_names = [SoftwareName.CHROME.value]
-    operating_systems = [OperatingSystem.WINDOWS.value, OperatingSystem.LINUX.value]
-    user_agent_rotator = UserAgent(software_names=software_names, operating_systems=operating_systems, limit=100)
+    try:
 
-    userAgent = user_agent_rotator.get_random_user_agent()
+        options = webdriver.ChromeOptions()
+        options.add_experimental_option('excludeSwitches', ['enable-logging'])
+        
+        software_names = [SoftwareName.CHROME.value]
+        operating_systems = [OperatingSystem.WINDOWS.value, OperatingSystem.LINUX.value]
+        user_agent_rotator = UserAgent(software_names=software_names, operating_systems=operating_systems, limit=100)
 
-    options.add_argument(f'user-agent={userAgent}')
-    options.w3c = True
-    driver = webdriver.Chrome(options=options)
+        userAgent = user_agent_rotator.get_random_user_agent()
+
+        options.add_argument(f'user-agent={userAgent}')
+        options.w3c = True
+        driver = webdriver.Chrome(options=options)
+
+    except selenium.common.exceptions.WebDriverException as ex:
+        return
 
     # search url
     url = 'https://naver.com'
@@ -116,7 +121,7 @@ def SearchKeyword(keyword, LinkText):
     driver.switch_to.window(driver.window_handles[1])
 
 
-    for cnt in range(1, 10):
+    for cnt in range(2, 10):
         # 화면 내리기 end 키로.
         keyDownEnd()
 
@@ -129,12 +134,14 @@ def SearchKeyword(keyword, LinkText):
                 break
             
             # next page
-            naseong = driver.find_element(By.XPATH, f'//*[@id="__next"]/div/div[2]/div[2]/div[3]/div[1]/div[3]/div/a[{cnt}]')
+            naseong = driver.find_element(By.LINK_TEXT, f'{cnt}')
             naseong.click()
             time.sleep(1)
             continue
 
         keyDownPageDown()
+
+        pyautogui.press('end')
 
         time.sleep(30)
 
@@ -156,7 +163,7 @@ def getJsonInfo(filePath):
 if __name__ == "__main__":
 
     cnt = 0
-    for val in range(0, 10):
+    for val in range(0, 20):
         cnt += 1
         filePath = './searchInfo.json'  # json 파일.
         Array = getJsonInfo(filePath)
